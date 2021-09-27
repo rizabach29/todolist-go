@@ -27,14 +27,13 @@ func (s *AuthService) Login(loginModel models.LoginModel) (models.User, error) {
 }
 
 func (s *AuthService) Register(registerModel models.RegisterModel) bool {
-	// if _, err := s.Repo.UserRepostory.GetById(registerModel.Email); err != nil {
-	// 	return false
-	// }
+	if _, err := s.Repo.UserRepostory.GetById(registerModel.Email); err == nil {
+		return false
+	}
 
 	registerModel.Password, _ = helpers.HashPassword(registerModel.Password)
 	registerModel.ForgotPassword, _ = helpers.HashPassword(registerModel.ForgotPassword)
-
-	// s.Repo.UserRepostory.Create(registerModel)
-
-	return true
+	
+	s.Repo.UserRepostory.Create(registerModel)
+	return true	
 }

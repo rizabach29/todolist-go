@@ -4,12 +4,16 @@ import "github.com/rizabach29/todolist-go/repositories"
 
 
 type Services struct {
-	UserService IAuthService
+	AuthService IAuthService
+	TodoService ITodoService
+	RoleService IRoleService
 }
 
 // Initialize all services
 func NewService(repo *repositories.Repository) *Services {
 	return &Services{
-		UserService: NewAuthService(*repo),
+		AuthService: NewAuthService(*repo),
+		TodoService: NewTodoService(*repo),
+		RoleService: NewRoleService(*repo),
 	}
 }

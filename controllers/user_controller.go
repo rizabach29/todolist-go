@@ -29,19 +29,17 @@ func (ctrl *UserController) Register(c *gin.Context) {
 	var newUser models.RegisterModel
 
 	if isErr := helpers.PanicBindJSON(c, &newUser); isErr {
-		c.JSON(http.StatusNotAcceptable, gin.H{"error": "user exists"})
 		return
 	}
 
 	// registering new account
-	ctrl.services.UserService.Register(newUser)
+	if isErr := ctrl.services.AuthService.Register(newUser); isErr {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "user exist"})
+		return
+	}
 	c.JSON(http.StatusOK, gin.H{"message": "success"})
 }
 
 func (ctrl *UserController) Login(c *gin.Context) {
-	var userLogin models.LoginModel
-
-	if isErr := helpers.PanicBindJSON(c, &userLogin); isErr {
-		return
-	}	
+	
 }

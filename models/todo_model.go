@@ -10,7 +10,11 @@ type Todo struct {
 	UpdatedAt time.Time
 }
 
-type RequestTodoModel struct {
+type CreateTodoModel struct {
 	UserId int `json:"user_id" binding:"required"`
 	Title string `json:"title" binding:"required"`
+}
+
+type UpdateTodoModel struct {
+	CreateTodoModel
 }

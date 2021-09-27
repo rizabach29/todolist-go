@@ -12,6 +12,8 @@ import (
 
 func main() {
 	db := app.InitDB()
+	app.CreateSchema(db)
+
 	repository := repositories.NewRepository(db)
 	service := services.NewService(repository)
 	

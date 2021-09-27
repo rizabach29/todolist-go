@@ -4,19 +4,15 @@ import "time"
 
 
 type User struct {
-	Id             int `sql:"id,pk"`
-	Fullname       string `sql:"fullname"`
-	Email          string `sql:"email,unique"`
-	Password       string `sql:"password"`
-	ForgotPassword string `sql:"forgot_password"`
-	RoleId         int `sql:"role_id"`
-	CreatedAt      time.Time `sql:"created_at"`
-	UpdatedAt      time.Time `sql:"updated_at"`
-}
-
-type UserDB struct {
-	tableName struct{} `sql:"users"`
-	User
+	TableName struct{} `pg:"users"`
+	Id             int `pg:"id,pk"`
+	Fullname       string `pg:"fullname"`
+	Email          string `pg:"email,unique"`
+	Password       string `pg:"password"`
+	ForgotPassword string `pg:"forgot_password"`
+	RoleId         int `pg:"role_id"`
+	CreatedAt      time.Time `pg:"created_at"`
+	UpdatedAt      time.Time `pg:"updated_at"`
 }
 
 type RegisterModel struct {
@@ -30,4 +26,10 @@ type RegisterModel struct {
 type LoginModel struct {
 	Email          string	`json:"email" binding:"required"`
 	Password       string	`json:"password" binding:"required"`
+}
+
+type MinimalUserModel struct {
+	Fullname       string `json:"fullname"`
+	Email          string `json:"email"`
+	RoleId         int `json:"role_id"`
 }
