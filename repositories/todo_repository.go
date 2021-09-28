@@ -10,7 +10,7 @@ import (
 
 type ITodoRepository interface {
 	Create(todo models.CreateTodoModel) models.Todo
-	Update(todo models.CreateTodoModel) models.Todo
+	Update(todo models.UpdateTodoModel) models.Todo
 	Delete(id int)
 	GetById(id int) (models.Todo, error)
 	GetAll() []models.Todo
@@ -38,7 +38,7 @@ func (repo *TodoRepository) Create(todo models.CreateTodoModel) models.Todo {
 	return *newTodo
 }
 
-func (repo *TodoRepository) Update(todo models.CreateTodoModel) models.Todo {
+func (repo *TodoRepository) Update(todo models.UpdateTodoModel) models.Todo {
 	newTodo := &models.Todo{
 		Title: todo.Title,
 		UserId: todo.UserId,

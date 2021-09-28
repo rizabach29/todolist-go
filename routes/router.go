@@ -8,5 +8,5 @@ import (
 // initialize all router
 func InitRouter(router *gin.Engine, services *services.Services) {
 	NewUserRouter(router, services)
-	NewTodoRouter(router)
+	NewTodoRouter(router, services)
 }

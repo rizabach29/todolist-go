@@ -1,15 +1,12 @@
 package helpers
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
 )
 
-func PanicBindJSON(c *gin.Context, obj interface{}) bool {
+func PanicBindJSON(c *gin.Context, obj interface{}) error {
 	if err := c.ShouldBindJSON(&obj); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return true
+		return err
 	}
-	return false
+	return nil
 }

@@ -54,9 +54,7 @@ func (repo *UserRepository) Delete(id int) {
 
 func (repo *UserRepository) GetById(email string) (models.User, error) {
 	var user models.User
-	err := repo.db.Model(user).Where("email = ?", email).Select()
-	helpers.PanicIfError(err)
-
+	err := repo.db.Model(&user).Where("email = ?", email).Select()
 	return user, err
 }
 

@@ -1,14 +1,16 @@
 package services
 
 import (
+	"errors"
+
 	"github.com/rizabach29/todolist-go/helpers"
 	"github.com/rizabach29/todolist-go/models"
 	"github.com/rizabach29/todolist-go/repositories"
 )
 
 type IAuthService interface {
-	Login(loginModel models.LoginModel) (models.User, error)
-	Register(registerModel models.RegisterModel) bool
+	Login(loginModel models.LoginModel) (*string, error)
+	Register(registerModel models.RegisterModel) error
 }
 
 type AuthService struct {
@@ -21,19 +23,27 @@ func NewAuthService(Repo repositories.Repository) IAuthService {
 }
 
 // Method
-func (s *AuthService) Login(loginModel models.LoginModel) (models.User, error) {
-	s.Repo.UserRepostory.GetById(loginModel.Email)
-	return models.User{}, nil
+func (s *AuthService) Login(loginModel models.LoginModel) (*string, error) {
+	user, err := s.Repo.UserRepostory.GetById(loginModel.Email)
+	if err != nil {
+		return nil, errors.New("user not found")
+	}
+	if !helpers.CheckPasswordHash(loginModel.Password, user.Password) {
+		return nil, errors.New("password invalid")
+	}
+
+	token := helpers.JWTAuthService().GenerateToken(user.Email)
+	return &token, nil
 }
 
-func (s *AuthService) Register(registerModel models.RegisterModel) bool {
+func (s *AuthService) Register(registerModel models.RegisterModel) error {
 	if _, err := s.Repo.UserRepostory.GetById(registerModel.Email); err == nil {
-		return false
+		return errors.New("user exist")
 	}
 
 	registerModel.Password, _ = helpers.HashPassword(registerModel.Password)
 	registerModel.ForgotPassword, _ = helpers.HashPassword(registerModel.ForgotPassword)
 	
 	s.Repo.UserRepostory.Create(registerModel)
-	return true	
+	return nil	
 }

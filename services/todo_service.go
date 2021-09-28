@@ -10,32 +10,38 @@ type ITodoService interface {
 	Update(updatedTodo models.UpdateTodoModel) models.Todo
 	GetById(id int) models.Todo
 	GetAll() []models.Todo
-	Delete() bool
+	Delete(id int) bool
 }
 
 type TodoService struct {
+	Repo repositories.Repository
 }
 
-func NewTodoService(repo repositories.Repository) ITodoService {
-	return &TodoService{}
+func NewTodoService(Repo repositories.Repository) ITodoService {
+	return &TodoService{Repo}
 }
 
 func (s *TodoService) Create(m models.CreateTodoModel) models.Todo{
-	return models.Todo{}
+	newTodo := s.Repo.TodoRepository.Create(m)
+	return newTodo
 }
 
 func (s *TodoService) Update(m models.UpdateTodoModel) models.Todo{
-	return models.Todo{}
+	updatedTodo := s.Repo.TodoRepository.Update(m)
+	return updatedTodo
 }
 
-func (s *TodoService) Delete() bool{
+func (s *TodoService) Delete(id int) bool{
+	s.Repo.TodoRepository.Delete(id)
 	return true
 }
 
 func (s *TodoService) GetById(id int) models.Todo{
-	return models.Todo{}
+	todo, _ := s.Repo.TodoRepository.GetById(id)
+	return todo
 }
 
 func (s *TodoService) GetAll() []models.Todo{
-	return []models.Todo{}
+	todos := s.Repo.TodoRepository.GetAll()
+	return todos
 }
