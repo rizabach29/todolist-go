@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/rizabach29/todolist-go/helpers"
+	"github.com/rizabach29/todolist-go/middleware"
 	"github.com/rizabach29/todolist-go/models"
 	"github.com/rizabach29/todolist-go/repositories"
 )
@@ -32,7 +33,7 @@ func (s *AuthService) Login(loginModel models.LoginModel) (*string, error) {
 		return nil, errors.New("password invalid")
 	}
 
-	token := helpers.JWTAuthService().GenerateToken(user.Email)
+	token := middleware.NewJWTService().GenerateToken(user.Email)
 	return &token, nil
 }
 

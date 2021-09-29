@@ -8,7 +8,7 @@ import (
 type ITodoService interface {
 	Create(newTodo models.CreateTodoModel) models.Todo
 	Update(updatedTodo models.UpdateTodoModel) models.Todo
-	GetById(id int) models.Todo
+	GetById(id int) (models.Todo, error)
 	GetAll() []models.Todo
 	Delete(id int) bool
 }
@@ -36,9 +36,9 @@ func (s *TodoService) Delete(id int) bool{
 	return true
 }
 
-func (s *TodoService) GetById(id int) models.Todo{
-	todo, _ := s.Repo.TodoRepository.GetById(id)
-	return todo
+func (s *TodoService) GetById(id int) (models.Todo, error){
+	todo, err := s.Repo.TodoRepository.GetById(id)
+	return todo, err
 }
 
 func (s *TodoService) GetAll() []models.Todo{

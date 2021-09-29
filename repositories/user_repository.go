@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"log"
 	"time"
 
 	"github.com/go-pg/pg"
@@ -55,6 +56,7 @@ func (repo *UserRepository) Delete(id int) {
 func (repo *UserRepository) GetById(email string) (models.User, error) {
 	var user models.User
 	err := repo.db.Model(&user).Where("email = ?", email).Select()
+	log.Print(user)
 	return user, err
 }
 

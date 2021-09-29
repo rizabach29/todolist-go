@@ -1,13 +1,13 @@
-package helpers
+package middleware
 
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
-	"github.com/rizabach29/todolist-go/app"
 )
 
 type JWTService interface {
@@ -15,22 +15,28 @@ type JWTService interface {
 	ValidateToken(token string) (*jwt.Token, error)
 }
 
-type jwtServices struct {
-	secretKey string
-	issure    string
-}
-
 type authCustomClaims struct {
-	Name string `json:"name"`
+	Email string `json:"email"`
 	jwt.StandardClaims
 }
 
-//auth-jwt
-func JWTAuthService() JWTService {
+type jwtServices struct {
+	secretKey string
+}
+
+func NewJWTService() JWTService {
 	return &jwtServices{
-		secretKey: app.GetEnv("SECRET"),
-		issure:    "Bikash",
+		secretKey: getSecretKey(),
 	}
+}
+
+func getSecretKey() string {
+	secret := os.Getenv("SECRET")
+	if secret == "" {
+		secret = "secret"
+	}
+
+	return secret
 }
 
 func (service *jwtServices) GenerateToken(email string) string {
@@ -38,13 +44,11 @@ func (service *jwtServices) GenerateToken(email string) string {
 		email,
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Hour * 48).Unix(),
-			Issuer:    service.issure,
 			IssuedAt:  time.Now().Unix(),
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	//encoded string
 	t, err := token.SignedString([]byte(service.secretKey))
 	if err != nil {
 		panic(err)
@@ -64,10 +68,14 @@ func (service *jwtServices) ValidateToken(encodedToken string) (*jwt.Token, erro
 
 func AuthorizeJWT() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		const BEARER_SCHEMA = "Bearer"
+		const BEARER_SCHEMA = "Bearer "
 		authHeader := c.GetHeader("Authorization")
+		if authHeader == "" {
+			c.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
 		tokenString := authHeader[len(BEARER_SCHEMA):]
-		token, err := JWTAuthService().ValidateToken(tokenString)
+		token, err := NewJWTService().ValidateToken(tokenString)
 		if token.Valid {
 			claims := token.Claims.(jwt.MapClaims)
 			fmt.Println(claims)
@@ -75,5 +83,6 @@ func AuthorizeJWT() gin.HandlerFunc {
 			fmt.Println(err)
 			c.AbortWithStatus(http.StatusUnauthorized)
 		}
+
 	}
 }

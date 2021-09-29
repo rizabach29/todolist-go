@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"log"
 	"time"
 
 	"github.com/go-pg/pg"
@@ -59,9 +60,8 @@ func (repo *TodoRepository) Delete(id int) {
 
 func (repo *TodoRepository) GetById(id int) (models.Todo, error) {
 	var todo models.Todo
-	err := repo.db.Model(todo).Where("id = ?", id).Select()
-	helpers.PanicIfError(err)
-
+	err := repo.db.Model(&todo).Where("id = ?", id).Select()
+	log.Print(todo)
 	return todo, err
 }
 

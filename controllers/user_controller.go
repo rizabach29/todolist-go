@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -42,6 +41,7 @@ func (ctrl *UserController) Register(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
+	
 	c.JSON(http.StatusOK, gin.H{"message": "register success"})
 }
 
@@ -55,7 +55,6 @@ func (ctrl *UserController) Login(c *gin.Context) {
 	}
 
 	token, err := ctrl.services.AuthService.Login(loginUser)
-	log.Print(token)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
