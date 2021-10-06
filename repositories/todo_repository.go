@@ -5,16 +5,16 @@ import (
 	"time"
 
 	"github.com/go-pg/pg"
-	"github.com/rizabach29/todolist-go/helpers"
 	"github.com/rizabach29/todolist-go/models"
+	"github.com/rizabach29/todolist-go/models/base"
 )
 
 type ITodoRepository interface {
-	Create(todo models.CreateTodoModel) models.Todo
-	Update(todo models.UpdateTodoModel) models.Todo
-	Delete(id int)
-	GetById(id int) (models.Todo, error)
-	GetAll() []models.Todo
+	Create(todo models.CreateTodoModel) error
+	Update(id int, todo models.UpdateTodoModel) error
+	GetAll() ([]base.Todo, error)
+	GetById(id int) (base.Todo, error)
+	Delete(id int) error
 }
 
 type TodoRepository struct{
@@ -25,8 +25,8 @@ func NewTodoRepository(db *pg.DB) ITodoRepository {
 	return &TodoRepository{db}
 }
 
-func (repo *TodoRepository) Create(todo models.CreateTodoModel) models.Todo {
-	newTodo := &models.Todo{
+func (repo *TodoRepository) Create(todo models.CreateTodoModel) error{
+	newTodo := &base.Todo{
 		Title: todo.Title,
 		UserId: todo.UserId,
 		CreatedAt : time.Now(),
@@ -34,42 +34,34 @@ func (repo *TodoRepository) Create(todo models.CreateTodoModel) models.Todo {
 	}
 
 	_, err := repo.db.Model(newTodo).Insert()
-	helpers.PanicIfError(err)
-
-	return *newTodo
+	return err
 }
 
-func (repo *TodoRepository) Update(todo models.UpdateTodoModel) models.Todo {
-	newTodo := &models.Todo{
-		Title: todo.Title,
-		UserId: todo.UserId,
-		UpdatedAt : time.Now(),
+func (repo *TodoRepository) Update(id int, todo models.UpdateTodoModel) error {
+	values := map[string]interface{}{
+		"title": todo.Title,
 	}
 	
-	_, err := repo.db.Model(newTodo).WherePK().Update()
-	helpers.PanicIfError(err)
-	
-	return *newTodo
+	_, err := repo.db.Model(&values).TableExpr("todos").Where("id = ?", id).Update()
+	return err
 }
 
-func (repo *TodoRepository) Delete(id int) {
-	model := new(models.Todo)
+func (repo *TodoRepository) Delete(id int) error {
+	model := new(base.Todo)
 	_, err := repo.db.Model(model).Where("id = ?", id).Delete()
-	helpers.PanicIfError(err)
+	return err
 }
 
-func (repo *TodoRepository) GetById(id int) (models.Todo, error) {
-	var todo models.Todo
+func (repo *TodoRepository) GetById(id int) (base.Todo, error) {
+	var todo base.Todo
 	err := repo.db.Model(&todo).Where("id = ?", id).Select()
 	log.Print(todo)
 	return todo, err
 }
 
-func (repo *TodoRepository) GetAll() []models.Todo {
-	var todos []models.Todo
+func (repo *TodoRepository) GetAll() ([]base.Todo, error) {
+	var todos []base.Todo
 
 	err := repo.db.Model(&todos).Select()
-	helpers.PanicIfError(err)
-
-	return todos
+	return todos, err
 }

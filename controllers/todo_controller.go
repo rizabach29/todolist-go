@@ -10,6 +10,7 @@ import (
 	"github.com/rizabach29/todolist-go/services"
 )
 
+
 type ITodoController interface {
 	Create(c *gin.Context)
 	GetAll(c *gin.Context)
@@ -18,13 +19,16 @@ type ITodoController interface {
 	Delete(c *gin.Context)
 }
 
+
 type TodoController struct {
 	services *services.Services
 }
 
+
 func NewTodoController(services *services.Services) ITodoController {
 	return &TodoController{services}
 }
+
 
 func (ctrl *TodoController) Create(c *gin.Context) {
 	var newTodo models.CreateTodoModel
@@ -39,34 +43,55 @@ func (ctrl *TodoController) Create(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "create todo success", "data": todo})
 }
 
+
 func (ctrl *TodoController) GetAll(c *gin.Context) {
-	todos := ctrl.services.TodoService.GetAll()
+	isAllowed := helpers.IsRoleAllowed(c, "admin")
+	if !isAllowed {return}
+
+	todos, _ := ctrl.services.TodoService.GetAll()
 	c.JSON(http.StatusOK, todos)
 }
 
+
 func (ctrl *TodoController) GetById(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "id required"})
+	}
+
 	todo, err := ctrl.services.TodoService.GetById(id)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "user not found"})
 		return
 	}
-
+	
 	c.JSON(http.StatusOK, todo)
 }
 
+
 func (ctrl *TodoController) Update(c *gin.Context) {
 	var updatedTodo models.UpdateTodoModel
-
+	
 	if err := helpers.PanicBindJSON(c, &updatedTodo); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
-
-	c.JSON(http.StatusBadRequest, gin.H{"message": "todo updated"})
+	
+	c.JSON(http.StatusOK, gin.H{"message": "todo updated"})
 }
 
+
 func (ctrl *TodoController) Delete(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "id required"})
+	}
 	
-	c.JSON(http.StatusBadRequest, gin.H{"message": "todo deleted"})
+	
+	if err = ctrl.services.TodoService.Delete(id); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "delete user failed"})
+		return
+	}
+	
+	c.JSON(http.StatusOK, gin.H{"message": "todo deleted"})
 }

@@ -6,7 +6,7 @@ import (
 
 	"github.com/go-pg/pg"
 	"github.com/go-pg/pg/orm"
-	"github.com/rizabach29/todolist-go/models"
+	"github.com/rizabach29/todolist-go/models/base"
 )
 
 func InitDB() *pg.DB {
@@ -31,9 +31,12 @@ func InitDB() *pg.DB {
 
 func CreateSchema(db *pg.DB) {
 	models := []interface{}{
-		(*models.User)(nil),
-		(*models.Role)(nil),
-		(*models.Todo)(nil),
+		(*base.User)(nil),
+		(*base.Role)(nil),
+		(*base.Todo)(nil),
+		(*base.Status)(nil),
+		(*base.TodoList)(nil),
+		(*base.Attachment)(nil),
 	}
 
 	for _, model := range models {
@@ -43,7 +46,7 @@ func CreateSchema(db *pg.DB) {
 		if err != nil {
 				panic(err)
 		} else {
-			log.Printf("Success Create table")
+			log.Printf("Success Create table %T", model)
 		}
 	}
 }

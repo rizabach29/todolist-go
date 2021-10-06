@@ -1,20 +1,20 @@
 package repositories
 
 import (
-	"log"
 	"time"
 
 	"github.com/go-pg/pg"
-	"github.com/rizabach29/todolist-go/helpers"
 	"github.com/rizabach29/todolist-go/models"
+	"github.com/rizabach29/todolist-go/models/base"
 )
 
 type IUserRepository interface {
-	Create(newUser models.RegisterModel) models.RegisterModel
-	Update() models.User
-	Delete(id int)
-	GetById(email string) (models.User, error)
-	GetAll() []models.User
+	Create(newUser models.RegisterModel) error
+	Update(id int, user models.UpdateUserModel) error
+	Delete(id int) error
+	GetById(id int) (base.User, error)
+	GetByEmail(email string) (base.User, error)
+	GetAll() ([]base.User, error)
 }
 
 type UserRepository struct{
@@ -25,9 +25,9 @@ func NewUserRepository(db *pg.DB) IUserRepository {
 	return &UserRepository{db}
 }
 
-func (repo *UserRepository) Create(user models.RegisterModel) models.RegisterModel {
+func (repo *UserRepository) Create(user models.RegisterModel) error {
 	
-	newUser := &models.User{
+	newUser := &base.User{
 		Fullname: user.Fullname,
 		Email: user.Email,
 		Password: user.Password,
@@ -37,34 +37,40 @@ func (repo *UserRepository) Create(user models.RegisterModel) models.RegisterMod
 		UpdatedAt: time.Now(),
 	}
 
-	_,err := repo.db.Model(newUser).Insert()
-	helpers.PanicIfError(err)
-
-	return user
+	_, err := repo.db.Model(newUser).Insert()
+	return err
 }
 
-func (repo *UserRepository) Update() models.User {
-	return models.User{}
+func (repo *UserRepository) Update(id int, user models.UpdateUserModel) error {
+	values := map[string]interface{}{
+		"fullname": user.Fullname,
+		"role_id": user.RoleId,
+	}
+	
+	_, err := repo.db.Model(&values).TableExpr("users").Where("id = ?", id).Update()
+	return err
 }
 
-func (repo *UserRepository) Delete(id int) {
-	model := new(models.User)
+func (repo *UserRepository) Delete(id int) error {
+	model := new(base.User)
 	_, err := repo.db.Model(model).Where("id = ?", id).Delete()
-	helpers.PanicIfError(err)
+	return err
 }
 
-func (repo *UserRepository) GetById(email string) (models.User, error) {
-	var user models.User
+func (repo *UserRepository) GetByEmail(email string) (base.User, error) {
+	var user base.User
 	err := repo.db.Model(&user).Where("email = ?", email).Select()
-	log.Print(user)
 	return user, err
 }
 
-func (repo *UserRepository) GetAll() []models.User {
-	var users []models.User
+func (repo *UserRepository) GetById(id int) (base.User, error) {
+	var user base.User
+	err := repo.db.Model(&user).Where("id = ?", id).Select()
+	return user, err
+}
 
+func (repo *UserRepository) GetAll() ([]base.User, error) {
+	var users []base.User
 	err := repo.db.Model(&users).Select()
-	helpers.PanicIfError(err)
-
-	return users
+	return users, err
 }
