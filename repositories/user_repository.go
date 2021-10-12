@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/go-pg/pg"
+	"github.com/rizabach29/todolist-go/app"
 	"github.com/rizabach29/todolist-go/models"
 	"github.com/rizabach29/todolist-go/models/base"
 )
@@ -21,8 +22,8 @@ type UserRepository struct{
 	db *pg.DB
 }
 
-func NewUserRepository(db *pg.DB) IUserRepository {
-	return &UserRepository{db}
+func NewUserRepository() IUserRepository {
+	return &UserRepository{app.GetDatabase()}
 }
 
 func (repo *UserRepository) Create(user models.RegisterModel) error {

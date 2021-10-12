@@ -16,7 +16,7 @@ func NewTodoRouter(router *gin.Engine, services *services.Services) {
 	{
 		todoRouter.GET("/", todoController.GetAll)
 		todoRouter.GET("/:id", todoController.GetById)
-		todoRouter.POST("", todoController.Create)
+		todoRouter.POST("/", todoController.Create)
 		todoRouter.PUT("/:id", todoController.Update)
 		todoRouter.DELETE("/:id", todoController.Delete)
 	}

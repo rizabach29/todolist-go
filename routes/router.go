@@ -9,4 +9,5 @@ import (
 func InitRouter(router *gin.Engine, services *services.Services) {
 	NewAuthRouter(router, services)
 	NewTodoRouter(router, services)
+	NewUserRouter(router, services)
 }

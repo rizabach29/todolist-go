@@ -11,10 +11,10 @@ import (
 )
 
 func main() {
-	db := app.InitDB()
-	app.CreateSchema(db)
+	app.GetDatabase()
+	app.CreateSchema()
 
-	repository := repositories.NewRepository(db)
+	repository := repositories.NewRepository()
 	service := services.NewService(repository)
 	
 	gin.ForceConsoleColor()

@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/go-pg/pg"
+	"github.com/rizabach29/todolist-go/app"
 	"github.com/rizabach29/todolist-go/models"
 	"github.com/rizabach29/todolist-go/models/base"
 )
@@ -20,8 +21,8 @@ type RoleRepository struct{
 	db *pg.DB
 }
 
-func NewRoleRepository(db *pg.DB) IRoleRepository {
-	return &RoleRepository{db}
+func NewRoleRepository() IRoleRepository {
+	return &RoleRepository{app.GetDatabase()}
 }
 
 func (repo *RoleRepository) Create(role models.CreateRoleModel) error {

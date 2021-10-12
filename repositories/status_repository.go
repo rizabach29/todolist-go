@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"github.com/go-pg/pg"
+	"github.com/rizabach29/todolist-go/app"
 	"github.com/rizabach29/todolist-go/models"
 	"github.com/rizabach29/todolist-go/models/base"
 )
@@ -18,8 +19,8 @@ type StatusRepository struct {
 	db *pg.DB
 }
 
-func NewStatusRepository(db *pg.DB) IStatusRepository {
-	return &StatusRepository{db}
+func NewStatusRepository() IStatusRepository {
+	return &StatusRepository{app.GetDatabase()}
 }
 
 func (r *StatusRepository) Create(id int, m models.CreateStatusModel) error {

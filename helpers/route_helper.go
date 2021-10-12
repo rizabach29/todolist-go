@@ -16,7 +16,7 @@ func PanicBindJSON(c *gin.Context, obj interface{}) error {
 func IsRoleAllowed(c *gin.Context, allowedRole string) bool {
 	role, _ := c.Get("role")
 	if role != allowedRole {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "role must be" + allowedRole})
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "role user must be " + allowedRole})
 		return false
 	}
 	return true

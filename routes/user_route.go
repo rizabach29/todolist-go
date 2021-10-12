@@ -13,7 +13,7 @@ func NewUserRouter(router *gin.Engine, services *services.Services) {
 	userRoute := router.Group("/")
 	userRoute.Use(middleware.AuthorizeJWT())
 	{
-		userRoute.POST("/asignrole", userCtrl.AsignRole)
+		userRoute.POST("/user/:id/asignrole/:userId", userCtrl.AsignRole)
 		userRoute.GET("/user", userCtrl.GetAll)
 	}
 }

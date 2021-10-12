@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/go-pg/pg"
+	"github.com/rizabach29/todolist-go/app"
 	"github.com/rizabach29/todolist-go/models"
 	"github.com/rizabach29/todolist-go/models/base"
 )
@@ -21,8 +22,8 @@ type TodolistRepository struct {
 	db *pg.DB
 }
 
-func NewTodolistRepository(db *pg.DB) ITodolistRepository {
-	return &TodolistRepository{db}
+func NewTodolistRepository() ITodolistRepository {
+	return &TodolistRepository{app.GetDatabase()}
 }
 
 func (r *TodolistRepository) Create(todolist models.CreateTodolistModel) (error) {

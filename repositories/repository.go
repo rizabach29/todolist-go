@@ -1,20 +1,22 @@
 package repositories
 
-import (
-	"github.com/go-pg/pg"
-)
-
 type Repository struct {
 	UserRepostory IUserRepository
 	RoleRepository IRoleRepository
 	TodoRepository ITodoRepository
+	StatusRepository IStatusRepository
+	AttachmentRepository IAttachmentRepository
+	TodolistRepository ITodolistRepository
 }
 
 // initialize all repositories
-func NewRepository(db *pg.DB) *Repository {
+func NewRepository() *Repository {
 	return &Repository{
-		UserRepostory: NewUserRepository(db),
-		RoleRepository: NewRoleRepository(db),
-		TodoRepository: NewTodoRepository(db),
+		UserRepostory: NewUserRepository(),
+		RoleRepository: NewRoleRepository(),
+		TodoRepository: NewTodoRepository(),
+		StatusRepository: NewStatusRepository(),
+		AttachmentRepository: NewAttachmentRepository(),
+		TodolistRepository: NewTodolistRepository(),
 	}
 }

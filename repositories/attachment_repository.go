@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/go-pg/pg"
+	"github.com/rizabach29/todolist-go/app"
 	"github.com/rizabach29/todolist-go/models"
 	"github.com/rizabach29/todolist-go/models/base"
 )
@@ -20,8 +21,8 @@ type AttachmentRepository struct {
 	db *pg.DB
 }
 
-func NewAttachmentRepository(db *pg.DB) IAttachmentRepository {
-	return &AttachmentRepository{db}
+func NewAttachmentRepository() IAttachmentRepository {
+	return &AttachmentRepository{app.GetDatabase()}
 }
 
 func (r *AttachmentRepository) Create(m models.CreateAttachmentModel) error {

@@ -9,6 +9,7 @@ type IUserService interface {
 	GetById(id int) (models.MinimalUserModel, error)
 	GetAll() []models.MinimalUserModel
 	Delete(id int) bool
+	UpdateRole(id, roleId int) bool
 }
 
 type UserService struct {
@@ -54,4 +55,17 @@ func (s *UserService) Delete(id int) bool {
 	return true
 }
 
+func (s *UserService) UpdateRole(id, roleId int) bool {
+	user, err := s.Repo.UserRepostory.GetById(id)
+	if err != nil {
+		return false
+	}
 
+	updateUser := &models.UpdateUserModel{
+		Fullname: user.Fullname,
+		RoleId: roleId,
+	}
+	user.RoleId = roleId
+	err = s.Repo.UserRepostory.Update(id, *updateUser)
+	return err == nil
+}

@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/go-pg/pg"
+	"github.com/rizabach29/todolist-go/app"
 	"github.com/rizabach29/todolist-go/models"
 	"github.com/rizabach29/todolist-go/models/base"
 )
@@ -21,8 +22,8 @@ type TodoRepository struct{
 	db *pg.DB
 }
 
-func NewTodoRepository(db *pg.DB) ITodoRepository {
-	return &TodoRepository{db}
+func NewTodoRepository() ITodoRepository {
+	return &TodoRepository{app.GetDatabase()}
 }
 
 func (repo *TodoRepository) Create(todo models.CreateTodoModel) error{
