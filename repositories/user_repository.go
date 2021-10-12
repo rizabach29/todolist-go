@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"log"
 	"time"
 
 	"github.com/go-pg/pg"
@@ -43,12 +44,17 @@ func (repo *UserRepository) Create(user models.RegisterModel) error {
 }
 
 func (repo *UserRepository) Update(id int, user models.UpdateUserModel) error {
-	values := map[string]interface{}{
-		"fullname": user.Fullname,
-		"role_id": user.RoleId,
+	values := &base.User{
+		Id: id,
+		Fullname: user.Fullname,
+		RoleId: user.RoleId,
 	}
+	log.Print(values)
 	
-	_, err := repo.db.Model(&values).TableExpr("users").Where("id = ?", id).Update()
+	_, err := repo.db.Model(values).
+				Set("fullname = ?fullname").
+				Set("role_id = ?role_id").WherePK().Update()
+	log.Print(err)
 	return err
 }
 

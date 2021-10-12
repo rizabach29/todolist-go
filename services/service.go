@@ -8,6 +8,7 @@ type Services struct {
 	TodoService ITodoService
 	RoleService IRoleService
 	UserService IUserService
+	TodolistService ITodolistService
 }
 
 // Initialize all services
@@ -17,5 +18,6 @@ func NewService(repo *repositories.Repository) *Services {
 		TodoService: NewTodoService(*repo),
 		RoleService: NewRoleService(*repo),
 		UserService: NewUserService(*repo),
+		TodolistService: NewTodolistService(*repo),
 	}
 }

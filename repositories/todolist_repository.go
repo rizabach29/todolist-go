@@ -15,6 +15,7 @@ type ITodolistRepository interface {
 	Update(id int, todolist models.UpdateTodolistModel) error
 	GetAll() ([]base.TodoList, error)
 	GetById(id int) (base.TodoList, error)
+	GetByTodoId(id int) (base.TodoList, error)
 	Delete(id int) error
 }
 
@@ -48,6 +49,12 @@ func (r *TodolistRepository) GetAll() ([]base.TodoList, error) {
 func (r *TodolistRepository) GetById(id int) (base.TodoList, error) {
 	var todolist base.TodoList
 	err := r.db.Model(&todolist).Where("id = ?", id).Select()
+	return todolist, err
+}
+
+func (r *TodolistRepository) GetByTodoId(idTodo int) (base.TodoList, error) {
+	var todolist base.TodoList
+	err := r.db.Model(&todolist).Where("id_todo = ?", idTodo).Select()
 	return todolist, err
 }
 

@@ -7,38 +7,49 @@ import (
 )
 
 type ITodolistService interface {
-	Create(todolist models.CreateTodolistModel) base.TodoList
-	GetAll() []base.TodoList
+	Create(todolist models.CreateTodolistModel) error
+	GetAll() ([]base.TodoList, error)
 	GetById(id int) (base.TodoList, error)
-	Update(todolist models.UpdateTodolistModel) base.TodoList
-	Delete(id int)
+	GetByTodoId(id int) (base.TodoList, error)
+	Update(id int, todolist models.UpdateTodolistModel) error
+	Delete(id int) error
 }
 
 type TodolistService struct {
-	repo *repositories.Repository
+	repo repositories.Repository
 }
 
-func NewTodolistService(repo *repositories.Repository) ITodolistService {
+func NewTodolistService(repo repositories.Repository) ITodolistService {
 	return &TodolistService{repo}
 }
 
-func (s *TodolistService) Create(todolist models.CreateTodolistModel) base.TodoList {
-	panic("not implemented") // TODO: Implement
+func (s *TodolistService) Create(todolist models.CreateTodolistModel) error {
+	err := s.repo.TodolistRepository.Create(todolist)
+	return err
 }
 
-func (s *TodolistService) GetAll() []base.TodoList {
-	panic("not implemented") // TODO: Implement
+func (s *TodolistService) GetAll() ([]base.TodoList, error) {
+	todolists, err := s.repo.TodolistRepository.GetAll()
+	return todolists, err
 }
 
 func (s *TodolistService) GetById(id int) (base.TodoList, error) {
-	panic("not implemented") // TODO: Implement
+	todolist, err := s.repo.TodolistRepository.GetById(id)
+	return todolist, err
 }
 
-func (s *TodolistService) Update(todolist models.UpdateTodolistModel) base.TodoList {
-	panic("not implemented") // TODO: Implement
+func (s *TodolistService) GetByTodoId(id int) (base.TodoList, error) {
+	todolist, err := s.repo.TodolistRepository.GetByTodoId(id)
+	return todolist, err
 }
 
-func (s *TodolistService) Delete(id int) {
-	panic("not implemented") // TODO: Implement
+func (s *TodolistService) Update(id int, todolist models.UpdateTodolistModel) error {
+	err := s.repo.TodolistRepository.Update(id, todolist)
+	return err
+}
+
+func (s *TodolistService) Delete(id int) error {
+	err := s.repo.TodolistRepository.Delete(id)
+	return err
 }
 

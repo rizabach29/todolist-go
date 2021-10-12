@@ -7,6 +7,7 @@ import (
 
 // initialize all router
 func InitRouter(router *gin.Engine, services *services.Services) {
+	NewTodolistRouter(router,services)
 	NewAuthRouter(router, services)
 	NewTodoRouter(router, services)
 	NewUserRouter(router, services)

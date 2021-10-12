@@ -1,6 +1,8 @@
 package services
 
 import (
+	"log"
+
 	"github.com/rizabach29/todolist-go/models"
 	"github.com/rizabach29/todolist-go/repositories"
 )
@@ -60,12 +62,13 @@ func (s *UserService) UpdateRole(id, roleId int) bool {
 	if err != nil {
 		return false
 	}
-
+	
 	updateUser := &models.UpdateUserModel{
 		Fullname: user.Fullname,
 		RoleId: roleId,
 	}
-	user.RoleId = roleId
+	log.Print(updateUser)
+	
 	err = s.Repo.UserRepostory.Update(id, *updateUser)
 	return err == nil
 }

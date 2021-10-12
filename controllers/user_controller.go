@@ -32,13 +32,13 @@ func (ctrl *UserController) GetAll(c *gin.Context) {
 func (ctrl *UserController) AsignRole(c *gin.Context) {
 	if !helpers.IsRoleAllowed(c, "admin") {return}
 	
-	id, err := strconv.Atoi(c.Param("id"))
+	id, err := strconv.Atoi(c.Param("userId"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "id required"})
 		return
 	}
 
-	roleId, err := strconv.Atoi(c.Param("RoleId"))
+	roleId, err := strconv.Atoi(c.Param("roleId"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "role id required"})
 		return

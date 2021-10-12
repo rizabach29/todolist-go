@@ -10,10 +10,10 @@ import (
 func NewUserRouter(router *gin.Engine, services *services.Services) {
 	userCtrl := controllers.NewUserController(services)
 
-	userRoute := router.Group("/")
+	userRoute := router.Group("/user")
 	userRoute.Use(middleware.AuthorizeJWT())
 	{
-		userRoute.POST("/user/:id/asignrole/:userId", userCtrl.AsignRole)
-		userRoute.GET("/user", userCtrl.GetAll)
+		userRoute.POST("/:userId/assignrole/:roleId", userCtrl.AsignRole)
+		userRoute.GET("/", userCtrl.GetAll)
 	}
 }
